@@ -1,0 +1,238 @@
+//Easy Level
+import java.util.ArrayList;
+import java.util.List; 
+import java.util.Scanner;
+public class SumOfIntegers {
+// Method to parse a string into an Integer
+public static Integer parseStringToInteger(String str) { try {
+return Integer.parseInt(str);
+} catch (NumberFormatException e) {
+System.out.println("Invalid input: " + str + " is not a valid integer."); return 
+null; // Return null if parsing fails
+}
+}
+// Method to calculate the sum of a list of integers public static
+int calculateSum(List<Integer> integers) {
+int sum = 0;
+for (Integer number : integers) {
+// Unboxing: Integer to int sum += 
+number;
+}
+return sum;
+}
+public static void main(String[] args) { 
+Scanner scanner = new Scanner(System.in);
+List<Integer> integerList = new ArrayList<>(); 
+System.out.println("Enter integers (type 'done' to finish):");
+while (true) {
+String input = scanner.nextLine();
+if (input.equalsIgnoreCase("done")) {
+break; // Exit the loop if the user types 'done'
+}
+Integer number = parseStringToInteger(input); 
+if (number != null) {
+// Autoboxing: int to Integer 
+integerList.add(number);
+}
+}
+// Calculate the sum of the integers in the list 
+int sum = calculateSum(integerList);
+System.out.println("The sum of the entered integers is: " + sum);
+scanner.close();
+}
+}
+
+//Medium level
+import java.io.*;
+import java.util.Scanner;
+class Student implements Serializable {
+private static final long serialVersionUID = 1L; // For serialization 
+private int id;
+private String name; 
+private double gpa;
+public Student(int id, String name, double gpa) { 
+this.id = id;
+this.name = name; 
+this.gpa = gpa;
+}
+public int getId() { return 
+id;
+}
+public String getName() { return 
+name;
+}
+public double getGpa() { 
+return gpa;
+}
+@Override
+public String toString() {
+return "Student ID: " + id + ", Name: " + name + ", GPA: " + gpa;
+}
+}
+public class StudentSerialization {
+private static final String FILE_NAME = "student.ser"; 
+public static void serializeStudent(Student student) {
+try (ObjectOutputStream oos = new ObjectOutputStream(new 
+FileOutputStream(FILE_NAME))) {
+oos.writeObject(student);
+System.out.println("Student object serialized successfully.");
+} catch (FileNotFoundException e) { 
+System.out.println("File not found: " + e.getMessage());
+} catch (IOException e) {
+System.out.println("IOException occurred: " + e.getMessage());
+}
+}
+public static Student deserializeStudent() { 
+Student student = null;
+try (ObjectInputStream ois = new
+ObjectInputStream(new FileInputStream(FILE_NAME))) {
+student = (Student) ois.readObject(); 
+System.out.println("Student object deserialized successfully.");
+} catch (FileNotFoundException e) { 
+System.out.println("File not found: " + e.getMessage());
+} catch (IOException e) {
+System.out.println("IOException occurred: " + e.getMessage());
+} catch (ClassNotFoundException e) { 
+System.out.println("Class not found: " + e.getMessage());
+}
+return student;
+}
+public static void main(String[] args) { 
+Scanner scanner = new Scanner(System.in); 
+int choice;
+do {
+System.out.println("\nMenu:"); 
+System.out.println("1. Serialize Student"); 
+System.out.println("2. Deserialize Student"); 
+System.out.println("3. Exit"); 
+System.out.print("Enter your choice: "); 
+choice = scanner.nextInt(); 
+scanner.nextLine(); // Consume newline
+switch (choice) { 
+case 1:
+System.out.print("Enter Student ID: "); 
+int id = scanner.nextInt(); 
+scanner.nextLine(); // Consume newline
+System.out.print("Enter Student Name: "); 
+String name = scanner.nextLine(); 
+System.out.print("Enter Student GPA: "); 
+double gpa = scanner.nextDouble();
+Student student = new Student(id, name, gpa); 
+serializeStudent(student);
+break;
+case 2:
+Student deserializedStudent = deserializeStudent(); 
+if (deserializedStudent != null) {
+System.out.println("Deserialized Student Details: " + deserializedStudent);
+}
+break;
+case 3:
+System.out.println("Exiting the program."); 
+break;
+default:
+System.out.println("Invalid choice. Please try again.");
+}
+} while (choice != 3);
+scanner.close();
+}
+}
+
+//Hard Level
+
+import java.io.*;
+import java.util.ArrayList; 
+import java.util.List; 
+import java.util.Scanner;
+class EmployeeRecord implements Serializable {
+private static final long serialVersionUID = 1L; // For serialization 
+private String name;
+private int id;
+private String designation; 
+private double salary;
+public EmployeeRecord(String name, int id, String designation, double salary) { 
+this.name = name;
+this.id = id;
+this.designation = designation; 
+this.salary = salary;
+}
+@Override
+public String toString() {
+return "Employee ID: " + id + ", Name: " + name + ", Designation: " + designation + 
+", Salary: " + salary;
+}
+}
+public class EmployeeManagement {
+private static final String FILE_NAME = "employees.ser"; 
+public static void addEmployee(EmployeeRecord employee) {
+List<EmployeeRecord> employees = readEmployees(); 
+employees.add(employee);
+try (ObjectOutputStream oos = new ObjectOutputStream(new 
+FileOutputStream(FILE_NAME))) {
+oos.writeObject(employees); 
+System.out.println("Employee added successfully.");
+} catch (IOException e) {
+System.out.println("Error saving employee: " + e.getMessage());
+}
+}
+public static List<EmployeeRecord> readEmployees() { 
+List<EmployeeRecord> employees = new ArrayList<>();
+try (ObjectInputStream ois = new ObjectInputStream(new 
+FileInputStream(FILE_NAME))) {
+employees = (List<EmployeeRecord>) ois.readObject();
+} catch (FileNotFoundException e) {
+// File not found, return empty list
+} catch (IOException | ClassNotFoundException e) { 
+System.out.println("Error reading employees: " + e.getMessage());
+}
+return employees;
+}
+public static void displayEmployees() { 
+List<EmployeeRecord> employees = readEmployees(); 
+if (employees.isEmpty()) {
+System.out.println("No employees found.");
+} else {
+System.out.println("Employee Details:");
+for (EmployeeRecord employee : employees) { 
+System.out.println(employee);
+}
+}
+}
+public static void main(String[] args) { 
+Scanner scanner = new Scanner(System.in); 
+int choice;
+do {
+System.out.println("\nMenu:"); 
+System.out.println("1. Add an Employee"); 
+System.out.println("2. Display All Employees"); 
+System.out.println("3. Exit"); 
+System.out.print("Enter your choice: ");
+choice = scanner.nextInt(); 
+scanner.nextLine(); // Consume newline
+switch (choice) { 
+case 1:
+System.out.print("Enter Employee Name: "); 
+String name = scanner.nextLine(); 
+System.out.print("Enter Employee ID: ");
+int id = scanner.nextInt(); 
+scanner.nextLine(); // Consume newline 
+System.out.print("Enter Designation: "); 
+String designation = scanner.nextLine(); 
+System.out.print("Enter Salary: "); 
+double salary = scanner.nextDouble();
+salary);
+EmployeeRecord employee = new EmployeeRecord(name, id, designation,
+addEmployee(employee); 
+break;
+case 2:
+displayEmployees(); 
+break;
+case 3:
+System.out.println("Exiting the program."); 
+break;
+default:
+System.out.println("Invalid choice. Please try again.");
+}
+} while (choice != 3);
+scanner.close();
+}
+}
